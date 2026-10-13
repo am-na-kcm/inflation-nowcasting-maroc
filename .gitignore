@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+.env
+data/
+*.pyc
+.databricks/
+.ruff_cache/
+.pytest_cache/

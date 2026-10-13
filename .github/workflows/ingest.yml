@@ -1,0 +1,25 @@
+name: ingest
+on:
+  schedule:
+    - cron: "0 5 * * 1"        # every Monday 05:00 UTC
+  workflow_dispatch:
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: python -m src.ingestion.run_all
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+      - uses: databricks/setup-cli@main
+      - run: |
+          databricks fs cp --recursive --overwrite \
+            data/landing dbfs:/Volumes/workspace/landing/raw/
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}

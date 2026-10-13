@@ -1,0 +1,35 @@
+resources:
+  jobs:
+    nowcast_monthly:
+      name: nowcast_monthly
+      schedule:
+        quartz_cron_expression: "0 0 7 5 * ?"      # 5th of each month, 07:00
+        timezone_id: Africa/Casablanca
+      email_notifications:
+        on_failure:
+          - amnaa.benkacem@mail.com
+      tasks:
+        - task_key: bronze
+          notebook_task:
+            notebook_path: ../pipelines/01_bronze/bronze_load.py
+        - task_key: silver_weather
+          depends_on: [{task_key: bronze}]
+          notebook_task:
+            notebook_path: ../pipelines/02_silver/silver_weather.py
+        - task_key: silver_brent
+          depends_on: [{task_key: bronze}]
+          notebook_task:
+            notebook_path: ../pipelines/02_silver/silver_brent.py
+        - task_key: silver_trends
+          depends_on: [{task_key: bronze}]
+          notebook_task:
+            notebook_path: ../pipelines/02_silver/silver_trends.py
+        - task_key: gold
+          depends_on: [{task_key: silver_weather}, {task_key: silver_brent},
+                       {task_key: silver_trends}]
+          notebook_task:
+            notebook_path: ../pipelines/03_gold/gold_features.py
+        - task_key: model
+          depends_on: [{task_key: gold}]
+          notebook_task:
+            notebook_path: ../models/nowcast.py

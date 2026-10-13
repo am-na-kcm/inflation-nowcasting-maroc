@@ -1,0 +1,15 @@
+requests
+pandas
+pyarrow
+openpyxl
+pytrends
+hijri-converter
+python-dotenv
+statsmodels
+scikit-learn
+mlflow
+streamlit
+# dev
+pytest
+responses
+ruff

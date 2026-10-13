@@ -1,0 +1,12 @@
+bundle:
+  name: inflation_nowcasting
+
+include:
+  - resources/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://dbc-dd18d11c-62b4.cloud.databricks.com
